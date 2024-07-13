@@ -49,3 +49,12 @@ cfonts.say("----------------",{
 	background: 'transparent', 
      // define the background color, you can also use `backgroundColor` here as key
 })
+
+export const buildtext = (text) => {
+	cfonts.say(text,{
+		font: 'console',
+		align: 'left',    
+		colors: ['cyan'], 
+		background: 'transparent', 
+	});
+} 

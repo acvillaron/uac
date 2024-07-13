@@ -56,7 +56,7 @@ export const BinariesVulnerables = [
     }
 ];
 
-export const seguirQuestion = [
+export const nextQuestion = [
     {
         type: 'confirm',
         name: 'continue',
@@ -69,5 +69,17 @@ export const nextOrLeaveQuestion = [
         type: 'confirm',
         name: 'next',
         message: '¿Quieres realizar una nueva busqueda?',
+    }
+];
+
+/**
+ * OPENAPI QUESTIONS
+*/
+
+export const openAPIQuestion = [
+    {
+        type: 'input',
+        name: 'ia',
+        message: '¿Te gustaria obtener información adicional basica (guia) sobre alguna fila de la tabla?, si la respuesta es SI, por favor digite el número de la fila, en caso contrario digite la letra S',
     }
 ];

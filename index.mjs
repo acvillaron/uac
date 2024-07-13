@@ -4,17 +4,20 @@ import {database} from './database.mjs';
 import { 
     Wizard,
     OSQuestion, 
-    seguirQuestion,
+    nextQuestion,
     TypeMethodQuestion,
     BinariesVulnerables,
     nextOrLeaveQuestion,
+    openAPIQuestion,
     MENU_SALIR,
     MENU_OS,
     MENU_BINARIO,
     MENU_TECNICA
 } from './wizzard.mjs';
-import './banner.mjs';
-
+import {buildtext} from './banner.mjs';
+import dotenv from 'dotenv';
+dotenv.config();
+import { IaPrompt } from './services/ia.mjs';
 const answers = {
     os:null,
     type:null,
@@ -53,39 +56,27 @@ const RunQuesions = async (option) => {
 
             break;
     }
-    const responseContinue = await inquirer.prompt(seguirQuestion);
+    const responseContinue = await inquirer.prompt(nextQuestion);
     if(responseContinue.continue){
         OS();
     }else{
         const results = await getGuide(answers.os,answers.type, answers.binary);
         console.table(results);
+        
+        const responseIA = await inquirer.prompt(openAPIQuestion);
+
+        if(Number(responseIA.ia) >= 0){
+            const text = await IaPrompt(results[responseIA.ia]);
+            buildtext(text);
+        }
+
         inquirer.prompt(nextOrLeaveQuestion).then((response) => {
-            if(response.next) OS();
+            if(response.next){OS()}
+            else {
+                database.end();
+            }
         });
     }
-    
-    // console.log(answers);
-    // const responseContinue =await inquirer.prompt(seguirQuestion);
-    // const getTypesDB = await getTypes();
-    // if(getTypesDB && responseContinue.continue){
-    //     TypeQuestion.at(0).choices = [...getTypesDB];
-    //     var responseType =await inquirer.prompt(TypeQuestion);
-    // }
-
 }
 
-// const OS = async () => {
-//     const responseOS =await inquirer.prompt(OSQuestion);
-//     const responseContinue =await inquirer.prompt(seguirQuestion);
-//     const getTypesDB = await getTypes();
-//     if(getTypesDB && responseContinue.continue){
-//         TypeQuestion.at(0).choices = [...getTypesDB];
-//         var responseType =await inquirer.prompt(TypeQuestion);
-//     }
-
-//     getGuide(responseOS,responseType)
-// }
-
-OS().then(() => {
-    // database.end();
-});
+OS();
